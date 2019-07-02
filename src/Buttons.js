@@ -6,7 +6,7 @@ export default class Buttons extends React.Component {
         return (
         <div className="center">
             <ButtonToolbar>
-                <button className="btn btn-default" onClick={this.props.play}>
+                <button className="btn btn-default" onClick={this.props.playButton}>
                     Play
                 </button>
                 <button className="btn btn-default" onClick={this.props.pauseButton}>

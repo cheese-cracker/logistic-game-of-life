@@ -12,7 +12,7 @@ function deepClone(arr) {
 class Main extends React.Component {
     // speed is update time!
     // speed = 50;
-    speed = 3000;
+    speed = 2000;
     rows = 30;
     cols = 50;
     state = {
@@ -33,7 +33,6 @@ class Main extends React.Component {
         for(let n = 0; n < num; n++){
             var a_i = Math.floor(Math.random()*this.rows);
             var a_j = Math.floor(Math.random()*this.cols);
-            console.log("Seeded", a_i, a_j);
             newGrid[a_i][a_j] = 1;
         }
         this.setState({
@@ -54,18 +53,34 @@ class Main extends React.Component {
                 var adjacent = 0;
 
                 // adjacent - left and right
-                adjacent += (i === 0)? 0 : g[i - 1][j];
-                adjacent += (i === this.rows - 1)? 0 : g[i + 1][j];
+                if (i !== 0){
+                    adjacent += g[i - 1][j] ? 1 : 0;
+                }
+                if (i !== this.rows - 1){
+                    adjacent += g[i + 1][j]?  1 : 0;
+                }
 
                 // adjacent - top and bottom
-                adjacent += (j === 0)? 0 : g[i][j - 1];
-                adjacent += (j === this.cols - 1)? 0 : g[i][j + 1];
+                if (j !== 0){
+                    adjacent += g[i][j - 1] ? 1 : 0;
+                }
+                if (j !== this.cols - 1){
+                    adjacent += g[i][j + 1] ? 1 : 0;
+                }
 
                 // diagonals
-                adjacent += (j === 0 || i === 0)? 0 : g[i-1][j - 1];
-                adjacent += (i === 0 || j === this.cols - 1)? 0 : g[i - 1][j + 1];
-                adjacent += (i === this.rows - 1 || j === 0)? 0 : g[i + 1][j - 1];
-                adjacent += (i === this.rows - 1 || j === this.rows - 1)? 0 : g[i + 1][j + 1];
+                if (i !== 0 && j !== 0){
+                    adjacent += g[i - 1][j - 1] ? 1 : 0;
+                }
+                if (i !== 0 && j !== this.cols - 1){
+                    adjacent += g[i - 1][j + 1] ? 1 : 0;
+                }
+                if (i !== this.rows - 1 && j !== 0){
+                    adjacent += g[i + 1][j - 1]? 1 : 0;
+                }
+                if (i !== this.rows - 1 && j !== this.cols - 1){
+                    adjacent += g[i + 1][j + 1]? 1 : 0;
+                }
 
                 // check rules for life and create/destroy
                 if(g[i][j] && (adjacent < 2 || adjacent > 3)){
@@ -82,9 +97,21 @@ class Main extends React.Component {
         });
     }
 
+    clear = () => {
+        clearInterval(this.intervalId);
+        this.setState({
+            generation: 0,
+            gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false)),
+        });
+    }
+
+    pauseButton = () => {
+        clearInterval(this.intervalId);
+    }
+
     componentDidMount() {
         // Change ratio 
-        var seedNo = Math.floor((this.rows*this.cols)/4);
+        var seedNo = Math.floor((this.rows*this.cols)/5);
         this.seeder(seedNo);
         this.playButton();
     }

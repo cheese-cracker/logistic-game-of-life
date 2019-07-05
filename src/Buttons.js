@@ -2,6 +2,7 @@ import React from 'react';
 import {ButtonToolbar} from 'react-bootstrap';
 
 export default class Buttons extends React.Component {
+    
     render(){
         return (
         <div className="center">
@@ -17,6 +18,9 @@ export default class Buttons extends React.Component {
                 </button>
                 <button className="btn btn-default" onClick={this.props.seed}>
                   Seed
+                </button>
+                <button className="btn btn-default" onClick={this.props.gitSeed}>
+                  GitHub Scrap and Seed
                 </button>
             </ButtonToolbar>
         </div>

@@ -25,7 +25,7 @@ export default class Grid extends React.Component {
         for ( var i = 0; i < this.props.rows; i++){
             for (var j = 0; j < this.props.cols; j++){
                 var boxId = "box_" + i + "_" + j;
-                var boxClass = this.props.gridFull[i][j] ? "box on": "box off";
+                var boxClass = this.props.gridFull[i][j] ? "boxer on": "boxer off";
                 rowsArr.push(
                     <Box
                         boxClass={boxClass}
@@ -40,7 +40,7 @@ export default class Grid extends React.Component {
         }
 
         return (
-            <div className="grid" style={{width: width}}>
+            <div className="gridder" style={{width: width}}>
                 {rowsArr}
             </div>
         );

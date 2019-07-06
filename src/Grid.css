@@ -1,4 +1,4 @@
-.grid {
+.gridder {
   width: 150px;
   line-height: 0;
   margin: auto;
@@ -6,7 +6,7 @@
   margin-top: 20px;
 }
 
-.box {
+.boxer {
   display: inline-block;       
   border: 1px solid black;
   width: 15px;

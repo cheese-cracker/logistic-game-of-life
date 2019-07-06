@@ -21,6 +21,14 @@ class Main extends React.Component {
     state = {
         generation: 0,
         gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false)),
+        nick:'cheese-cracker',
+    }
+
+    nickChange = (ev) => {
+        const value = ev.target.value;
+        this.setState({
+            nick: value,
+        });
     }
 
     selectBox = (row, col) => {
@@ -36,7 +44,7 @@ class Main extends React.Component {
         // array from scraper
         // var activeArr = [[1,2], [2,3], [2,2], [2,1]];
         // const url = 'https://github.com/cheese-cracker/';
-        const url = 'https://cors-anywhere.herokuapp.com/github.com/cheese-cracker';
+        const url = `https://cors-anywhere.herokuapp.com/github.com/${ this.state.nick }`;
         gitScrape(url, (activeArr) => {
             console.log(activeArr);
             const XOffset = 4;
@@ -163,6 +171,8 @@ class Main extends React.Component {
                     clear={this.clear}
                     seed={this.seeder}
                     gitSeed={this.gitSeeder}
+                    nickChange={this.nickChange}
+                    nick={this.state.nick}
                 />
                 <Grid 
                     gridFull ={this.state.gridFull}

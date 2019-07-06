@@ -1,0 +1,46 @@
+.white{
+    color: white;
+    font-size: 20px;
+}
+
+input{
+    background-color:#555555;
+    border: 2px solid transparent;
+    font-size: 18px;
+    padding: 10px 24px;
+    margin: 2px;
+    color: white;
+}
+.button-plus {
+  background-color: #008CBA;
+  border:none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+}
+
+.button-scrape {
+  background-color: #cc7a00; 
+  border:2px solid transparent;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+.button-scrape:hover {
+  background-color: #4CAF50;
+}
+.button-plus:hover {
+  background-color: #4CAF50;
+}
+input:hover{
+    border: 2px solid #e7e7e7;
+}

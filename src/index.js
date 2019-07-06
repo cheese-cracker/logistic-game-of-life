@@ -13,9 +13,9 @@ function deepClone(arr) {
 }
 
 class Main extends React.Component {
-    // speed is update time!
-    // speed = 50;
+    // speed and ratio are inverse!
     speed = 2000;
+    ratio = 4;
     rows = 7+5+5;
     cols = 36+16+5+5;
     state = {
@@ -73,7 +73,8 @@ class Main extends React.Component {
         });
     }
 
-    seeder = (num) => {
+    seeder = () => {
+        let num = (this.rows*this.cols)/this.ratio;
         var newGrid = deepClone(this.state.gridFull);
         for(let n = 0; n < num; n++){
             var a_i = Math.floor(Math.random()*this.rows);
@@ -156,8 +157,7 @@ class Main extends React.Component {
 
     componentDidMount() {
         // Change ratio 
-        var seedNo = Math.floor((this.rows*this.cols)/5);
-        this.seeder(seedNo);
+        this.seeder();
         this.playButton();
     }
 

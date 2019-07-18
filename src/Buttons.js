@@ -7,10 +7,10 @@ export default class Buttons extends React.Component {
     render(){
         return (
         <div className="center">
-                <div class="form-group row">
-                    <label for="inputText" class="col-sm-8 col-form-label white">https://github.com/</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputText" value={ this.props.nick } onChange={this.props.nickChange} />
+                <div className="form-group row">
+                    <label htmlFor="inputText" className="col-sm-8 col-form-label white">https://github.com/</label>
+                    <div className="col-sm-10">
+                        <input type="text" className="form-control" id="inputText" value={ this.props.nick } onChange={this.props.nickChange} />
                     </div>
                 </div>
                 <button className="btn btn-default button-scrape" onClick={this.props.gitSeed}>

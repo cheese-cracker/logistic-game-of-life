@@ -4,6 +4,7 @@ import './index.css';
 import Grid from './Grid';
 import Buttons from './Buttons';
 import gitScrape from './GitScrape';
+import rules from './rules';
 // import cheerio from 'cheerio';
 // import request from 'request';
 
@@ -22,6 +23,7 @@ class Main extends React.Component {
         generation: 0,
         gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false)),
         nick:'cheese-cracker',
+        count: 0,
     }
 
     nickChange = (ev) => {
@@ -56,25 +58,21 @@ class Main extends React.Component {
                 console.log(el);
                 let a_i = parseInt(el[0]) + XOffset;
                 let a_j = parseInt(el[1]) + YOffset;
-                if(a_i === -0){
-                    a_i = 0;
-                }
-                if(a_j === -0){
-                    a_j = 0;
-                }
                 console.log(a_i, a_j)
                 // Note: Scrapped Grid is inverted so a_j, a_i
                 newGrid[a_j][a_i] = true;
                 // console.log(el[0], el[1]);
             });
             this.setState({
-                gridFull: newGrid
+                gridFull: newGrid,
+                count: activeArr.length,
             });
         });
     }
 
     seeder = () => {
         let num = (this.rows*this.cols)/this.ratio;
+        this.count = num;
         var newGrid = deepClone(this.state.gridFull);
         for(let n = 0; n < num; n++){
             var a_i = Math.floor(Math.random()*this.rows);
@@ -82,7 +80,8 @@ class Main extends React.Component {
             newGrid[a_i][a_j] = 1;
         }
         this.setState({
-            gridFull: newGrid
+            gridFull: newGrid,
+            count: 0,
         });
     }
 
@@ -94,52 +93,11 @@ class Main extends React.Component {
     play = () => {
         var g = this.state.gridFull;
         var ng = deepClone(g);
-        for(let i = 0; i < this.rows; i++){
-            for(let j = 0; j < this.cols; j++){
-                var adjacent = 0;
-
-                // adjacent - left and right
-                if (i !== 0){
-                    adjacent += g[i - 1][j] ? 1 : 0;
-                }
-                if (i !== this.rows - 1){
-                    adjacent += g[i + 1][j]?  1 : 0;
-                }
-
-                // adjacent - top and bottom
-                if (j !== 0){
-                    adjacent += g[i][j - 1] ? 1 : 0;
-                }
-                if (j !== this.cols - 1){
-                    adjacent += g[i][j + 1] ? 1 : 0;
-                }
-
-                // diagonals
-                if (i !== 0 && j !== 0){
-                    adjacent += g[i - 1][j - 1] ? 1 : 0;
-                }
-                if (i !== 0 && j !== this.cols - 1){
-                    adjacent += g[i - 1][j + 1] ? 1 : 0;
-                }
-                if (i !== this.rows - 1 && j !== 0){
-                    adjacent += g[i + 1][j - 1]? 1 : 0;
-                }
-                if (i !== this.rows - 1 && j !== this.cols - 1){
-                    adjacent += g[i + 1][j + 1]? 1 : 0;
-                }
-
-                // check rules for life and create/destroy
-                if(g[i][j] && (adjacent < 2 || adjacent > 3)){
-                    ng[i][j] = 0;
-                }
-                if(!(g[i][j]) && adjacent === 3){
-                    ng[i][j] = 1;
-                }
-            }
-        }
+        let res = rules(g, ng, this.rows, this.cols, this.state.count);
         this.setState({
-            gridFull: ng,
+            gridFull: res[0],
             generation: this.state.generation + 1,
+            count: res[1],
         });
     }
 
@@ -148,6 +106,7 @@ class Main extends React.Component {
         this.setState({
             generation: 0,
             gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false)),
+            count: 0,
         });
     }
 
@@ -181,6 +140,7 @@ class Main extends React.Component {
                     selectBox={this.selectBox}
                 />
                 <h3>Generation: {this.state.generation}</h3>
+                <h3>Count: {this.state.count}</h3>
             </div>
         );
     }

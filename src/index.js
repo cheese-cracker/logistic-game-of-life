@@ -16,7 +16,7 @@ function deepClone(arr) {
 class Main extends React.Component {
     // speed and ratio are inverse!
     speed = 2000;
-    ratio = 4;
+    ratio = 8;
     rows = 7+5+5;
     cols = 36+16+5+5;
     state = {
@@ -37,7 +37,8 @@ class Main extends React.Component {
         var newGrid = deepClone(this.state.gridFull);
         newGrid[row][col] = !(newGrid[row][col]);
         this.setState({
-            gridFull: newGrid
+            gridFull: newGrid,
+            count: this.state.count + 1,
         });
     }
 
@@ -72,16 +73,20 @@ class Main extends React.Component {
 
     seeder = () => {
         let num = (this.rows*this.cols)/this.ratio;
-        this.count = num;
         var newGrid = deepClone(this.state.gridFull);
         for(let n = 0; n < num; n++){
             var a_i = Math.floor(Math.random()*this.rows);
             var a_j = Math.floor(Math.random()*this.cols);
-            newGrid[a_i][a_j] = 1;
+            // Remove prospects for duplicates
+            while(newGrid[a_i][a_j]){
+                a_i = Math.floor(Math.random()*this.rows);
+                a_j = Math.floor(Math.random()*this.cols);
+            }
+            newGrid[a_i][a_j] = true;
         }
         this.setState({
             gridFull: newGrid,
-            count: 0,
+            count: Math.floor(num),
         });
     }
 

@@ -1,9 +1,9 @@
-export default function rules(arr, newArr, rows, cols, prev_count, callback){
+export default function rules(arr, newArr, rows, cols, prev_count, r, K, callback){
     let count = 0;
     let selected = [];
     let removed = [];
-    let r = 0.2;
-    let K = rows*cols/5;
+    // let r = 0.2;
+    // let K = rows*cols/5;
     // console.log('grow', r, K);
     // Logistic Growth 
     let growth = r * (1 - prev_count/K) * prev_count;

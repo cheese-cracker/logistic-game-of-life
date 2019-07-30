@@ -5,6 +5,7 @@ import Grid from './Grid';
 import Buttons from './Buttons';
 import gitScrape from './GitScrape';
 import rules from './rules';
+import Values from './values';
 // import cheerio from 'cheerio';
 // import request from 'request';
 
@@ -24,6 +25,10 @@ class Main extends React.Component {
         gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false)),
         nick:'cheese-cracker',
         count: 0,
+        values:{
+            r: 0,
+            K: this.rows*this.cols/5,
+        },
     }
 
     nickChange = (ev) => {
@@ -98,7 +103,8 @@ class Main extends React.Component {
     play = () => {
         var g = this.state.gridFull;
         var ng = deepClone(g);
-        let res = rules(g, ng, this.rows, this.cols, this.state.count);
+        let res = rules(g, ng, this.rows, this.cols, this.state.count, this.state.values.r, this.state.values.K);
+        console.log(this.state.r, this.state.K);
         this.setState({
             gridFull: res[0],
             generation: this.state.generation + 1,
@@ -119,6 +125,17 @@ class Main extends React.Component {
         clearInterval(this.intervalId);
     }
 
+    submitValues = (ev) => {
+        const name = ev.target.name;
+        const val = ev.target.value;
+        this.setState({
+            values: {
+                ...this.state.values,
+                [name]: val,
+            }
+        });
+    }
+
     componentDidMount() {
         // Change ratio 
         this.seeder();
@@ -129,6 +146,13 @@ class Main extends React.Component {
         return (
             <div>
                 <h1> Chinmay's Logistic Growth based Game of Life </h1>
+            <div>
+                <Values
+                    l_r = {this.state.values.r}
+                    l_K = {this.state.values.K}
+                    changeHandler = {this.submitValues}
+                />
+            </div>
                 <Buttons
                     playButton={this.playButton}
                     pauseButton={this.pauseButton}

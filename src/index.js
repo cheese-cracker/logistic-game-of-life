@@ -16,7 +16,7 @@ function deepClone(arr) {
 
 class Main extends React.Component {
     // speed and ratio are inverse!
-    speed = 2000;
+    speed = 3000;
     ratio = 8;
     rows = 7+5+5;
     cols = 36+16+5+5;
@@ -28,6 +28,7 @@ class Main extends React.Component {
         values:{
             r: 0,
             K: this.rows*this.cols/5,
+            disable: false,
         },
     }
 
@@ -103,13 +104,14 @@ class Main extends React.Component {
     play = () => {
         var g = this.state.gridFull;
         var ng = deepClone(g);
-        let res = rules(g, ng, this.rows, this.cols, this.state.count, this.state.values.r, this.state.values.K);
-        console.log(this.state.r, this.state.K);
+        let res = rules(g, ng, this.rows, this.cols, this.state.count, this.state.values.r, this.state.values.K, this.state.values.disable);
+        // console.log(this.state.r, this.state.K);
         this.setState({
             gridFull: res[0],
             generation: this.state.generation + 1,
             count: res[1],
         });
+        console.log(this.state.values.disable);
     }
 
     clear = () => {
@@ -127,7 +129,10 @@ class Main extends React.Component {
 
     submitValues = (ev) => {
         const name = ev.target.name;
-        const val = ev.target.value;
+        var val = ev.target.value;
+        if(name === 'disable'){
+            val = !(this.state.values.disable);
+        }
         this.setState({
             values: {
                 ...this.state.values,
@@ -147,11 +152,14 @@ class Main extends React.Component {
             <div>
                 <h1> Chinmay's Logistic Growth based Game of Life </h1>
             <div>
+            <br />
                 <Values
                     l_r = {this.state.values.r}
                     l_K = {this.state.values.K}
+                    disable={this.state.values.disable}
                     changeHandler = {this.submitValues}
                 />
+            <br />
             </div>
                 <Buttons
                     playButton={this.playButton}

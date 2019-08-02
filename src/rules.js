@@ -1,4 +1,4 @@
-export default function rules(arr, newArr, rows, cols, prev_count, r, K, callback){
+export default function rules(arr, newArr, rows, cols, prev_count, r, K, disable, callback){
     let count = 0;
     let selected = [];
     let removed = [];
@@ -65,7 +65,10 @@ export default function rules(arr, newArr, rows, cols, prev_count, r, K, callbac
     }
     console.log('count_old', count);
     let boost = prev_count + growth - count;
-    console.log(boost);
+    if(disable){
+        boost = 0;
+    }
+    // console.log(boost);
     let treshold = 0;
     if (boost > 0){
         treshold = boost/selected.length;
@@ -86,6 +89,6 @@ export default function rules(arr, newArr, rows, cols, prev_count, r, K, callbac
             }
         });
     }
-    console.log(selected.length, removed.length);
+    // console.log(selected.length, removed.length);
     return [newArr, count];
 };

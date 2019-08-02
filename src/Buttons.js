@@ -8,7 +8,7 @@ export default class Buttons extends React.Component {
         return (
         <div className="center">
                 <div className="form-group row">
-                    <label htmlFor="inputText" className="col-sm-8 col-form-label white">https://github.com/</label>
+                    <label htmlFor="inputText" className="col-sm-8 col-form-label yellow">https://github.com/</label>
                     <div className="col-sm-10">
                         <input type="text" className="form-control" id="inputText" value={ this.props.nick } onChange={this.props.nickChange} />
                     </div>

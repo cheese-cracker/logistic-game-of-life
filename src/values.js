@@ -13,6 +13,9 @@ export default class Values extends React.Component {
                 <input className="short" type="text" name="r" value={this.props.l_r} onChange={this.props.changeHandler} />
                 <label htmlFor="inputText" className="col-sm-8 col-form-label yellow">K = </label>
                 <input className="short" type="text" name="K" value={this.props.l_K} onChange={this.props.changeHandler} />
+                <label className="checkbox-inline col-sm-8 col-form-label yellow small">
+                    <input type="checkbox" name="disable" value="1" onChange={this.props.changeHandler}/> Disable Logistic Growth
+                </label>
               </div>
             </form>
             </div>

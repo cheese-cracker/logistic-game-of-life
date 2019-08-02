@@ -4,10 +4,16 @@
   margin-top: 5px;
 }
 
+.yellow{
+    color: #ffff00;
+    font-family: monospace;
+    font-size: x-large;
+}
  
 h1, h2, h3, h4 {
-  color: white;
+  color: yellow;
   margin: auto;
+  font-family: monospace;
   text-align: center;
   width: 90%;
   margin-top: 10px;

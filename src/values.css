@@ -1,6 +1,9 @@
 .short{
     width: 50px;
+    color: #ffff00;
+    font-family: monospace;
+    font-size: large;
 }
-.yellow{
-    color: #ffff00
+.small{
+    font-size: large;
 }

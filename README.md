@@ -1,6 +1,6 @@
 # Chinmay's Logistic Growth Based Game of Life
 
-This Game is a **modified version of the famous "Conway's Game of Life"**, originally introduced by John Conway in 1970. The Rules of this game are adjusted so as to simulate Logistic Growth based on the equation,
+This Game is a **modified version of the famous "Conway's Game of Life"**, originally introduced by John Conway in 1970. The Rules of this game are adjusted so as to simulate Logistic Growth based on the equation,<br>
 ![Logistic Growth Latex](https://user-images.githubusercontent.com/30256734/63094773-e4ffc100-bf86-11e9-81c0-8ffa2e7490a3.png)<br>
 Or more specifically,<br>
 ![Logistic Growth Rate Latex](https://user-images.githubusercontent.com/30256734/63094254-7706ca00-bf85-11e9-853c-23bbb4b52bda.png)<br>

@@ -1,4 +1,4 @@
-export default function rules(arr, newArr, rows, cols, prev_count, r, K, disable, callback){
+export default function rules(arr, newArr, rows, cols, prev_count, r, K){
     let count = 0;
     let selected = [];
     let removed = [];
@@ -6,7 +6,8 @@ export default function rules(arr, newArr, rows, cols, prev_count, r, K, disable
     // let K = rows*cols/5;
     // console.log('grow', r, K);
     // Logistic Growth 
-    let growth = r * (1 - prev_count/K) * prev_count;
+    let growth;
+    growth = r * (1 - prev_count/K) * prev_count;
     for(let i = 0; i < rows; i++){
         for(let j = 0; j < cols; j++){
             var adjacent = 0;
@@ -47,25 +48,27 @@ export default function rules(arr, newArr, rows, cols, prev_count, r, K, disable
                 if (adjacent < 2 || adjacent > 3){
                     newArr[i][j] = false;
                 }else{
+                    count++;
                     removed.push([i, j]);
                 }
             }
 
             if(!(arr[i][j])){
                 if(adjacent === 3){
+                    count++;
                     newArr[i][j] = true;
                 }else if(adjacent === 2){
                     selected.push([i, j]);
                 }
             }
 
-            // Increment count
-            arr[i][j] && count++;
         }
     }
     console.log('count_old', count);
-    let boost = prev_count + growth - count;
-    if(disable){
+    let boost;
+    if(r){
+        boost = prev_count + growth - count;
+    }else{
         boost = 0;
     }
     // console.log(boost);

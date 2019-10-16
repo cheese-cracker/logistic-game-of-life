@@ -7,33 +7,34 @@ input{
     background-color:#555555;
     border: 2px solid transparent;
     font-size: 18px;
-    padding: 10px 24px;
+    padding: 8px 20px;
+    width: 25%;
     margin: 2px;
     color: yellow;
 }
 .button-plus {
-  background-color: #008CBA;
+  background-color: #9900cc;
   border:none;
   color: white;
-  padding: 10px 24px;
+  padding: 10px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 5px;
+  margin: 3px;
 }
 
 .button-scrape {
-  background-color: #cc7a00; 
+  background-color: #9900cc;
   border:2px solid transparent;
   color: white;
-  padding: 10px 24px;
+  padding: 8px 20px;
+  width: 35%;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
-  margin-top: 8px;
-  margin-bottom: 10px;
+  font-size: 14px;
+  margin-left: 4px;
 }
 .button-scrape:hover {
   background-color: #4CAF50;

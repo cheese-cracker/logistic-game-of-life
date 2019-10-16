@@ -28,7 +28,6 @@ class Main extends React.Component {
         values:{
             r: 0,
             K: this.rows*this.cols/5,
-            disable: false,
         },
     }
 
@@ -44,7 +43,7 @@ class Main extends React.Component {
         newGrid[row][col] = !(newGrid[row][col]);
         this.setState({
             gridFull: newGrid,
-            count: this.state.count + 1,
+            count: this.state.count + (2*newGrid[row][col] - 1),
         });
     }
 
@@ -104,14 +103,13 @@ class Main extends React.Component {
     play = () => {
         var g = this.state.gridFull;
         var ng = deepClone(g);
-        let res = rules(g, ng, this.rows, this.cols, this.state.count, this.state.values.r, this.state.values.K, this.state.values.disable);
+        let res = rules(g, ng, this.rows, this.cols, this.state.count, this.state.values.r, this.state.values.K);
         // console.log(this.state.r, this.state.K);
         this.setState({
             gridFull: res[0],
             generation: this.state.generation + 1,
             count: res[1],
         });
-        console.log(this.state.values.disable);
     }
 
     clear = () => {
@@ -130,9 +128,6 @@ class Main extends React.Component {
     submitValues = (ev) => {
         const name = ev.target.name;
         var val = ev.target.value;
-        if(name === 'disable'){
-            val = !(this.state.values.disable);
-        }
         this.setState({
             values: {
                 ...this.state.values,
@@ -151,16 +146,12 @@ class Main extends React.Component {
         return (
             <div>
                 <h1> Chinmay's Logistic Growth based Game of Life </h1>
-            <div>
-            <br />
+                <br />
                 <Values
                     l_r = {this.state.values.r}
                     l_K = {this.state.values.K}
-                    disable={this.state.values.disable}
                     changeHandler = {this.submitValues}
                 />
-            <br />
-            </div>
                 <Buttons
                     playButton={this.playButton}
                     pauseButton={this.pauseButton}

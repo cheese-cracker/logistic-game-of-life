@@ -1,7 +1,7 @@
 .center {
   margin: auto;
   display: table;
-  margin-top: 5px;
+  margin-top: 3px;
 }
 
 .yellow{
@@ -16,9 +16,12 @@ h1, h2, h3, h4 {
   font-family: monospace;
   text-align: center;
   width: 90%;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 h4 {
   margin-top: 0px;
+}
+a{
+    color:red;
 }

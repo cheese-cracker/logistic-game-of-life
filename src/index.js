@@ -169,6 +169,7 @@ class Main extends React.Component {
                 />
                 <h3>Generation: {this.state.generation}</h3>
                 <h3>Count: {this.state.count}</h3>
+                <h2>Checkout this project on <a href="https://github.com/cheese-cracker/logistic-game-of-life">Github</a>!</h2>
             </div>
         );
     }

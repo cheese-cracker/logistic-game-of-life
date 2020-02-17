@@ -16,14 +16,13 @@ function deepClone(arr) {
 }
 
 class Main extends React.Component {
-    // speed and seed_ratio are inverse!
-    speed = 3000;
-    seed_ratio = 8;
+    time_iter = 3000;
+    seed_ratio = 0.125;
     rows = 7+5+5;
     cols = 36+16+5+5;
     state = {
         generation: 0,
-        gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false)),
+        cellatrix: new Grid(this.rows, this.cols),
         nick:'cheese-cracker',
         count: 0,
         values:{
@@ -40,75 +39,65 @@ class Main extends React.Component {
     }
 
     selectBox = (row, col) => {
-        var newGrid = this.state.gridFull;
-        newGrid[row][col] = !(newGrid[row][col]);
+        let changeval = this.state.cellatrix.select(row, col).state()
         this.setState({
-            gridFull: newGrid,
-            count: this.state.count + (2*newGrid[row][col] - 1),
+            count: this.state.count + (2*changeval - 1),
         });
     }
 
     gitSeeder = () => {
-        var newGrid = this.state.gridFull;
+        let mat = this.state.cellatrix
         // array from scraper
         // var activeArr = [[1,2], [2,3], [2,2], [2,1]];
         // const url = 'https://github.com/cheese-cracker/';
-        const url = `https://cors-anywhere.herokuapp.com/github.com/${ this.state.nick }`;
+        const url = `https://cors-anywhere.herokuapp.com/github.com/${ this.state.nick }`
         gitScrape(url, (activeArr) => {
-            console.log(activeArr);
-            const XOffset = 4;
-            const YOffset = 4;
-            var num = 0;
+            console.log(activeArr)
+            const XOffset = 4
+            const YOffset = 4
             activeArr.forEach((el) => {
-                console.log(el);
-                let a_i = parseInt(el[0]) + XOffset;
-                let a_j = parseInt(el[1]) + YOffset;
+                let a_i = el[0] + XOffset
+                let a_j = el[1] + YOffset
                 console.log(a_i, a_j)
                 // Note: Scrapped Grid is inverted so a_j, a_i
-                newGrid[a_j][a_i] = !newGrid[a_j][a_i];
-                num = num + (2*newGrid[a_j][a_i] - 1);
-                // console.log(el[0], el[1]);
+                mat.select(a_i, a_j)
+                // console.log(el[0], el[1])
             });
+            let num = mat.count(1)
             this.setState({
-                gridFull: newGrid,
+                cellatrix: mat,
                 count: num + this.state.count,
             });
         });
     }
 
     seeder = () => {
-        let num = (this.rows*this.cols)/this.seed_ratio;
-        var newGrid = this.state.gridFull;
-        for(let n = 0; n < num; n++){
-            var a_i = Math.floor(Math.random()*this.rows);
-            var a_j = Math.floor(Math.random()*this.cols);
-            // Remove prospects for duplicates
-            while(newGrid[a_i][a_j]){
-                a_i = Math.floor(Math.random()*this.rows);
-                a_j = Math.floor(Math.random()*this.cols);
-            }
-            newGrid[a_i][a_j] = true;
+        let thresh =  1 - this.seed_ratio
+        if(thresh < 0 || thresh > 1){
+            thresh = 1 - 0.125
         }
+        this.state.cellatrix.simulate(thresh, (el)=>el.change())
+        let cellcount = this.state.cellatrix.count(1)
         this.setState({
-            gridFull: newGrid,
-            count: Math.floor(num),
+            count: cellcount,
         });
     }
 
     playButton = () => {
         clearInterval(this.intervalId);
-        this.intervalId = setInterval(this.play, this.speed);
+        this.intervalId = setInterval(this.play, this.time_iter);
     }
 
     play = () => {
-        var g = this.state.gridFull;
-        var ng = deepClone(g);
-        let res = rules(g, ng, this.rows, this.cols, this.state.count, this.state.values.r, this.state.values.K);
+        var g = this.state.cellatrix.matrix;
+        var prev_count = this.state.cellatrix.count(1)
+        var ng = deepClone(g)
+        let res = rules(g, ng, this.rows, this.cols, prev_count, this.state.values.r, this.state.values.K)
+        this.cellatrix.matrix = res[0]
         // console.log(this.state.r, this.state.K);
         this.setState({
-            gridFull: res[0],
             generation: this.state.generation + 1,
-            count: res[1],
+            count: this.state.cellatrix.count(1),
         });
     }
 
@@ -116,7 +105,7 @@ class Main extends React.Component {
         clearInterval(this.intervalId);
         this.setState({
             generation: 0,
-            gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false)),
+            cellatrix: this.state.cellatrix.simulate(0, (el)=>(el.set(0))),
             count: 0,
         });
     }
@@ -147,7 +136,7 @@ class Main extends React.Component {
             <div>
                 <h1> Chinmay's Logistic Growth based Game of Life </h1>
                 <br />
-                <Values
+                <ConfigValues
                     l_r = {this.state.values.r}
                     l_K = {this.state.values.K}
                     changeHandler = {this.submitValues}
@@ -162,7 +151,7 @@ class Main extends React.Component {
                     nick={this.state.nick}
                 />
                 <Grid 
-                    gridFull ={this.state.gridFull}
+                    gridFull ={this.state.cellatrix}
                     rows={this.rows}
                     cols={this.cols}
                     selectBox={this.selectBox}

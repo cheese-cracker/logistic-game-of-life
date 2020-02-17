@@ -1,48 +1,67 @@
-import React from 'react';
-import './Grid.css';
-
-
-class Box extends React.Component {
-    selectBox = () => {
-        this.props.selectBox(this.props.row, this.props.col);
+class Grid {
+    constructor (row, col, states=2, val=0) {
+        this.rows = row
+        this.cols = col
+        this.matrix = Array(this.rows).fill().map(() => (this.cols)).fill(val)
+        this.states = states
     }
-    render(){
-        return(
-            <div
-                className={this.props.boxClass}
-                id={this.props.boxId}
-                onClick={this.selectBox}
-            />
-        );
+
+    select (row, col) {
+        // this.matrix[row][col] = (this.matrix[row][col] + 1) % this.states
+        this.matrix[row][col].change();
+        return this.matrix[row][col]
     }
-}
 
-export default class Grid extends React.Component {
+    // Alter each element in which simulate > threshold
+    simulate (threshold, callback) {
+        this.matrix.forEach((row) => {
+            row.forEach((el) => {
+                let simulation = Math.random();
+                if(simulation > threshold){ callback(el) }
+            })
+        })
+    }
 
-    render(){
-        const width = this.props.cols * 16;
-        var rowsArr = [];
-        for ( var i = 0; i < this.props.rows; i++){
-            for (var j = 0; j < this.props.cols; j++){
-                var boxId = "box_" + i + "_" + j;
-                var boxClass = this.props.gridFull[i][j] ? "boxer on": "boxer off";
-                rowsArr.push(
-                    <Box
-                        boxClass={boxClass}
-                        key={boxId}
-                        boxId = {boxId}
-                        row={i}
-                        col={j}
-                        selectBox={this.props.selectBox}
-                    />
-                );
+    // Get neighbour window (Identity convolution also?)
+    iter_window(callback){
+        for(let i = 0; i < this.rows; i++){
+            let rowset;
+            if(i === 0){
+                rowset = this.matrix.splice(i, i + 1)
+            } else if (i === this.rows-1){
+                rowset = this.matrix.splice(i - 1, i)
+            }else{
+                rowset = this.matrix.splice(i - 1, i + 1)
+            }
+            for(let j = 0; j < this.cols - 1; j++){
+                let window;
+                if(i === 0){
+                    window = rowset.map((row) => row.splice(i, i + 1))
+                } else if (i === this.rows-1){
+                    window = rowset.map((row) => row.splice(i - 1, i))
+                }else{
+                    window = rowset.map((row) => row.splice(i - 1, i + 1))
+                }
+                callback(window)
             }
         }
+    }
 
-        return (
-            <div className="gridder" style={{width: width}}>
-                {rowsArr}
-            </div>
-        );
+    matrix() {
+        return this.matrix
+    }
+
+    count(state=1){
+        let count = 0;
+        this.matrix.forEach((row) => {
+            row.forEach((el) => {
+                count += (el.state===count);
+            })
+        })
+        return count
+    }
+
+    render() {
     }
 }
+export default Grid

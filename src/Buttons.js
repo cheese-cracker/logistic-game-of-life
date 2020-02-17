@@ -1,6 +1,6 @@
 import React from 'react';
 import {ButtonToolbar} from 'react-bootstrap';
-import './Buttons.css';
+import './css/Buttons.css';
 
 export default class Buttons extends React.Component {
 

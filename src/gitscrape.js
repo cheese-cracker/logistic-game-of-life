@@ -23,7 +23,8 @@ var gitScrape = (url, callback)=> {
                 var ypos = parseInt(Number($(el).attr('y'))/15);
                 console.log(count, xpos, ypos);
                 if(count > 0){
-                    activeArr.push([xpos, ypos]);
+                    // Inverted in matrix
+                    activeArr.push([ypos, xpos]);
                 }
             });
             console.log(activeArr);

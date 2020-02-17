@@ -1,11 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import Grid from './Grid';
-import Buttons from './Buttons';
-import gitScrape from './GitScrape';
-import rules from './rules';
-import Values from './values';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './css/index.css';
+// import Grid from './Grid';
+import Grid from './Grid2'
+import Buttons from './Buttons'
+import gitScrape from './GitScrape'
+import rules from './rules'
+import ConfigValues from './form'
 // import cheerio from 'cheerio';
 // import request from 'request';
 

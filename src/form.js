@@ -1,8 +1,8 @@
 import React from 'react';
-import './values.css';
+import './css/form.css';
 // import {FormControl, FormGroup, FormLabel} from 'react-bootstrap';
 
-export default class Values extends React.Component {
+export default class ConfigValues extends React.Component {
 
     render() {
         return(

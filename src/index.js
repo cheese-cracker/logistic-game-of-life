@@ -15,9 +15,9 @@ function deepClone(arr) {
 }
 
 class Main extends React.Component {
-    // speed and ratio are inverse!
+    // speed and seed_ratio are inverse!
     speed = 3000;
-    ratio = 8;
+    seed_ratio = 8;
     rows = 7+5+5;
     cols = 36+16+5+5;
     state = {
@@ -39,7 +39,7 @@ class Main extends React.Component {
     }
 
     selectBox = (row, col) => {
-        var newGrid = deepClone(this.state.gridFull);
+        var newGrid = this.state.gridFull;
         newGrid[row][col] = !(newGrid[row][col]);
         this.setState({
             gridFull: newGrid,
@@ -48,7 +48,7 @@ class Main extends React.Component {
     }
 
     gitSeeder = () => {
-        var newGrid = deepClone(this.state.gridFull);
+        var newGrid = this.state.gridFull;
         // array from scraper
         // var activeArr = [[1,2], [2,3], [2,2], [2,1]];
         // const url = 'https://github.com/cheese-cracker/';
@@ -57,28 +57,27 @@ class Main extends React.Component {
             console.log(activeArr);
             const XOffset = 4;
             const YOffset = 4;
-            let i = 0; 
+            var num = 0;
             activeArr.forEach((el) => {
-                i++;
-                console.log(i);
                 console.log(el);
                 let a_i = parseInt(el[0]) + XOffset;
                 let a_j = parseInt(el[1]) + YOffset;
                 console.log(a_i, a_j)
                 // Note: Scrapped Grid is inverted so a_j, a_i
-                newGrid[a_j][a_i] = true;
+                newGrid[a_j][a_i] = !newGrid[a_j][a_i];
+                num = num + (2*newGrid[a_j][a_i] - 1);
                 // console.log(el[0], el[1]);
             });
             this.setState({
                 gridFull: newGrid,
-                count: activeArr.length,
+                count: num + this.state.count,
             });
         });
     }
 
     seeder = () => {
-        let num = (this.rows*this.cols)/this.ratio;
-        var newGrid = deepClone(this.state.gridFull);
+        let num = (this.rows*this.cols)/this.seed_ratio;
+        var newGrid = this.state.gridFull;
         for(let n = 0; n < num; n++){
             var a_i = Math.floor(Math.random()*this.rows);
             var a_j = Math.floor(Math.random()*this.cols);

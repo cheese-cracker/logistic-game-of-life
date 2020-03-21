@@ -1,21 +1,30 @@
+import Gene from './Gene'
+
 class Grid {
-    constructor (row, col, states=2, val=0) {
+    constructor (row, col, states=2, default_val=0) {
         this.rows = row
         this.cols = col
-        this.matrix = Array(this.rows).fill().map(() => (this.cols)).fill(val)
+        var mat = []
+        for(let i = 0; i < row; i++){
+            let row = []
+            for(let j = 0; j < col; j++){
+                row[j] = new Gene(default_val, states)
+            }
+            mat[i] = row
+        }
+        this.mat = mat
         this.states = states
+        this.matrix = this.mat
     }
 
     select (row, col) {
-        // this.matrix[row][col] = (this.matrix[row][col] + 1) % this.states
-        this.matrix[row][col].change();
-        return this.matrix[row][col]
+        this.mat[row][col].change();
+        return this.mat[row][col].state
     }
 
-    // Alter each element in which simulate > threshold
-    simulate (threshold, callback) {
-        this.matrix.forEach((row) => {
-            row.forEach((el) => {
+    simulate_all(threshold, callback){
+        this.matrix.forEach((row, i) =>{
+            row.forEach((el, j) =>{
                 let simulation = Math.random();
                 if(simulation > threshold){ callback(el) }
             })
@@ -27,11 +36,11 @@ class Grid {
         for(let i = 0; i < this.rows; i++){
             let rowset;
             if(i === 0){
-                rowset = this.matrix.splice(i, i + 1)
+                rowset = this.mat.splice(i, i + 1)
             } else if (i === this.rows-1){
-                rowset = this.matrix.splice(i - 1, i)
+                rowset = this.mat.splice(i - 1, i)
             }else{
-                rowset = this.matrix.splice(i - 1, i + 1)
+                rowset = this.mat.splice(i - 1, i + 1)
             }
             for(let j = 0; j < this.cols - 1; j++){
                 let window;
@@ -42,26 +51,22 @@ class Grid {
                 }else{
                     window = rowset.map((row) => row.splice(i - 1, i + 1))
                 }
+                // callback window
                 callback(window)
+                // callback window, row, col
+                // callback window, element
             }
         }
     }
 
-    matrix() {
-        return this.matrix
-    }
-
-    count(state=1){
+    count(checkstate=1){
         let count = 0;
-        this.matrix.forEach((row) => {
+        this.mat.forEach((row) => {
             row.forEach((el) => {
-                count += (el.state===count);
+                count += (el.state===checkstate);
             })
         })
         return count
-    }
-
-    render() {
     }
 }
 export default Grid

@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './css/index.css';
-// import Grid from './Grid';
-import Grid from './Grid2'
+import Grid from './Grid'
+import GridView from './GridView'
 import Buttons from './Buttons'
-import gitScrape from './GitScrape'
+import gitScrape from './gitscrape'
 import rules from './rules'
 import ConfigValues from './form'
 // import cheerio from 'cheerio';
@@ -16,13 +16,13 @@ function deepClone(arr) {
 }
 
 class Main extends React.Component {
-    time_iter = 3000;
+    time_iter = 5000;
     seed_ratio = 0.125;
     rows = 7+5+5;
     cols = 36+16+5+5;
     state = {
         generation: 0,
-        cellatrix: new Grid(this.rows, this.cols),
+        genetrix: new Grid(this.rows, this.cols),
         nick:'cheese-cracker',
         count: 0,
         values:{
@@ -39,14 +39,14 @@ class Main extends React.Component {
     }
 
     selectBox = (row, col) => {
-        let changeval = this.state.cellatrix.select(row, col).state()
+        let changeval = this.state.genetrix.select(row, col)
         this.setState({
             count: this.state.count + (2*changeval - 1),
         });
     }
 
     gitSeeder = () => {
-        let mat = this.state.cellatrix
+        let mat = this.state.genetrix
         // array from scraper
         // var activeArr = [[1,2], [2,3], [2,2], [2,1]];
         // const url = 'https://github.com/cheese-cracker/';
@@ -65,7 +65,7 @@ class Main extends React.Component {
             });
             let num = mat.count(1)
             this.setState({
-                cellatrix: mat,
+                genetrix: mat,
                 count: num + this.state.count,
             });
         });
@@ -76,11 +76,12 @@ class Main extends React.Component {
         if(thresh < 0 || thresh > 1){
             thresh = 1 - 0.125
         }
-        this.state.cellatrix.simulate(thresh, (el)=>el.change())
-        let cellcount = this.state.cellatrix.count(1)
+        // Simulate each element
+        this.state.genetrix.simulate_all(thresh, (el) => { el.change() })
+        let cellcount = this.state.genetrix.count(1)
         this.setState({
             count: cellcount,
-        });
+        })
     }
 
     playButton = () => {
@@ -89,15 +90,15 @@ class Main extends React.Component {
     }
 
     play = () => {
-        var g = this.state.cellatrix.matrix;
-        var prev_count = this.state.cellatrix.count(1)
+        var g = this.state.genetrix.mat;
+        var prev_count = this.state.genetrix.count(1)
         var ng = deepClone(g)
         let res = rules(g, ng, this.rows, this.cols, prev_count, this.state.values.r, this.state.values.K)
-        this.cellatrix.matrix = res[0]
+        this.genetrix.mat = res[0]
         // console.log(this.state.r, this.state.K);
         this.setState({
             generation: this.state.generation + 1,
-            count: this.state.cellatrix.count(1),
+            count: this.state.genetrix.count(1),
         });
     }
 
@@ -105,7 +106,7 @@ class Main extends React.Component {
         clearInterval(this.intervalId);
         this.setState({
             generation: 0,
-            cellatrix: this.state.cellatrix.simulate(0, (el)=>(el.set(0))),
+            genetrix: this.state.genetrix.simulate_all(0, (el)=>(el.set(0))),
             count: 0,
         });
     }
@@ -128,7 +129,7 @@ class Main extends React.Component {
     componentDidMount() {
         // Change ratio 
         this.seeder();
-        this.playButton();
+        // this.playButton();
     }
 
     render() {
@@ -150,10 +151,8 @@ class Main extends React.Component {
                     nickChange={this.nickChange}
                     nick={this.state.nick}
                 />
-                <Grid 
-                    gridFull ={this.state.cellatrix}
-                    rows={this.rows}
-                    cols={this.cols}
+                <GridView
+                    celltrix={this.state.genetrix}
                     selectBox={this.selectBox}
                 />
                 <h3>Generation: {this.state.generation}</h3>

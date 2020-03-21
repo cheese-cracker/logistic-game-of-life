@@ -15,14 +15,14 @@
   margin-bottom: -1px;
   }
 
-.off {
+.cellstate0 {
   background-color: lightgray;
 }
 
-.on {
+.cellstate1 {
   background-color: green;
 }
   
-.box:hover { 
+.boxer:hover {
   background: #00CCFF;
 }

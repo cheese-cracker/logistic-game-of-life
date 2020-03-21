@@ -4,13 +4,17 @@ import './css/GridView.css';
 
 class Box extends React.Component {
     selectBox = () => {
-        this.props.selectBox(this.props.row, this.props.col);
+        this.props.selectBox(this.props.row, this.props.col)
     }
     render(){
+        let i = this.props.row
+        let j = this.props.col
+        var boxId = "box_" + i + "_" + j
+        var boxClass = `boxer brow-${i} bcol-${j} cellstate${this.props.boxGene.state}`
         return(
             <div
-                className={this.props.boxClass}
-                id={this.props.boxId}
+                className={boxClass}
+                id={boxId}
                 onClick={this.selectBox}
             />
         );
@@ -18,18 +22,18 @@ class Box extends React.Component {
 }
 
 export default class GridView extends React.Component {
-    width = this.props.cols * 16;
+    rows = this.props.celltrix.rows
+    cols = this.props.celltrix.cols
 
     render(){
+        let mtrix = this.props.celltrix.mat
         var rowsArr = [];
-        for ( var i = 0; i < this.props.rows; i++){
-            for (var j = 0; j < this.props.cols; j++){
-                var boxId = "box_" + i + "_" + j;
-                var boxClass = `box brow-${i} bcol-${j} cellstate${this.props.gridFull[i][j].state()}`;
+        for ( var i = 0; i < this.rows; i++){
+            for (var j = 0; j < this.cols; j++){
+                var cellgene = mtrix[i][j]
                 rowsArr.push(
                     <Box
-                        boxClass={boxClass}
-                        boxId = {boxId}
+                        boxGene = {cellgene}
                         row={i}
                         col={j}
                         selectBox={this.props.selectBox}
@@ -39,7 +43,7 @@ export default class GridView extends React.Component {
         }
 
         return (
-            <div className="gridder" style={{width: this.width}}>
+            <div className="gridder" style={{width: this.cols*16}}>
                 {rowsArr}
             </div>
         );

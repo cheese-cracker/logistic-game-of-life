@@ -36,23 +36,23 @@ class Grid {
         for(let i = 0; i < this.rows; i++){
             let rowset;
             if(i === 0){
-                rowset = this.mat.splice(i, i + 1)
+                rowset = this.mat.slice(i, i + 2)
             } else if (i === this.rows-1){
-                rowset = this.mat.splice(i - 1, i)
+                rowset = this.mat.slice(i - 1, i + 1)
             }else{
-                rowset = this.mat.splice(i - 1, i + 1)
+                rowset = this.mat.slice(i - 1, i + 2)
             }
-            for(let j = 0; j < this.cols - 1; j++){
+            for(let j = 0; j < this.cols; j++){
                 let window;
-                if(i === 0){
-                    window = rowset.map((row) => row.splice(i, i + 1))
-                } else if (i === this.rows-1){
-                    window = rowset.map((row) => row.splice(i - 1, i))
+                if(j === 0){
+                    window = rowset.map((row) => row.slice(j, j + 2))
+                } else if (j === this.cols-1){
+                    window = rowset.map((row) => row.slice(j - 1, j + 1))
                 }else{
-                    window = rowset.map((row) => row.splice(i - 1, i + 1))
+                    window = rowset.map((row) => row.slice(j - 1, j + 2))
                 }
                 // callback window
-                callback(window)
+                callback(window, this.mat[i][j])
                 // callback window, row, col
                 // callback window, element
             }

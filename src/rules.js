@@ -1,72 +1,84 @@
-// Simple Crossover
-function logistic_growth_rules(celltrix, r, K){
-    let prev_count = celltrix.count()
-    // let r = 0.2;
-    // let K = rows*cols/5;
+export function logistic_growth_rules(celltrix, r, K){
+    let oldcount = celltrix.count()
     // console.log('grow', r, K);
 
     // Logistic Growth 
-    let growth;
-    growth = r * (1 - prev_count/K) * prev_count;
+    let growth = r * (1 - oldcount/K) * oldcount;
 
-    let selected, removed = rules(celltrix)
+    var res = rules(celltrix)
+    var selected = res[0]
+    var removed = res[1]
 
     let newcount = celltrix.count()
-    console.log('count_old', newcount);
-    let boost;
+    console.log(`Actual Growth: ${growth} cells`)
+    var boost;
     if(r){
-        boost = prev_count + growth - newcount;
+        boost = oldcount + growth - newcount;
     }else{
         // Normal Logistic Growth
         boost = 0; 
     }
+    // Testing Values
+    // console.log(oldcount, growth, newcount);
+    // console.log(boost)
 
-    let thresh = 0;
+    // Change Ratio = The ratio of cells to be added/deleted; Threshold = 1 - change_ratio
+    let change_ratio;
     if (boost > 0){
-        thresh = boost/selected.length;
+        change_ratio = boost/selected.length;
         selected.forEach((gene) => {
-            gene.simulate(thresh, (cell)=>{cell.change()})
+            gene.simulate(1 - change_ratio, (cell)=>{cell.change()})
         });
     }else if (boost < 0){
-        thresh = - boost/removed.length;
+        change_ratio = - boost/removed.length;
         removed.forEach((gene) => {
-            gene.simulate(thresh, (cell)=>{cell.change()})
+            gene.simulate(1 - change_ratio, (cell)=>{cell.change()})
         });
     }
-    // console.log(selected.length, removed.length);
-    return celltrix
+    newcount = celltrix.count(1)
+    console.log(`Current Growth: ${newcount - oldcount} cells`)
+    return newcount
 };
 
 
-function rules(celltrix){
-    let select = [];
-    let remove = [];
-    celltrix.iter_window((win) =>{
-        // Get Neighbour States
+export function rules(celltrix){
+    let selectable = [];
+    let removable = [];
+    let change_select = []
+    celltrix.iter_window((win, mainel) =>{
+        // Count No. of alive Neighbours
         let adj = 0
-        let mainel = win[1][1]
-        win.forEach((row,i) =>{
-            row.forEach((el, j)=>{
-                if(i !== 1 && j !== 1){
-                    adj += el.state
+        win.forEach((row) =>{
+            row.forEach((el)=>{
+                if(el.state === 2){
+                    el.change()
                 }
+                    adj += el.state
             })
         })
+        adj -= mainel.state    // Correction to remove main element value
+
+        // console.log(adj)
 
         // check rules for life and create/destroy
         if(mainel.state){
             if (adj < 2 || adj > 3){
-                mainel.state = 0
+                change_select.push(mainel)
             }else{
-                remove.push(mainel)
+                removable.push(mainel)
             }
         }else if(!(mainel.state)){
             if(adj === 3){
-                mainel.state = 1
+                change_select.push(mainel)
             }else if(adj === 2){
-                select.push(mainel)
+                selectable.push(mainel)
             }
         }
+        // console.log(mainel)
     })
-    return (select, remove)
+    // console.log(change_select)
+    change_select.forEach((el) =>{
+        el.change()
+    })
+    return [selectable, removable]
 }

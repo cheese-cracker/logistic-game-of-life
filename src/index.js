@@ -5,24 +5,20 @@ import Grid from './Grid'
 import GridView from './GridView'
 import Buttons from './Buttons'
 import gitScrape from './gitscrape'
-import rules from './rules'
+import {logistic_growth_rules} from './rules'
 import ConfigValues from './form'
 // import cheerio from 'cheerio';
 // import request from 'request';
 
 
-function deepClone(arr) {
-    return JSON.parse(JSON.stringify(arr));
-}
-
 class Main extends React.Component {
-    time_iter = 5000;
+    time_iter = 4000;
     seed_ratio = 0.125;
     rows = 7+5+5;
     cols = 36+16+5+5;
     state = {
         generation: 0,
-        genetrix: new Grid(this.rows, this.cols),
+        genetrix: new Grid(this.rows, this.cols, 3),
         nick:'cheese-cracker',
         count: 0,
         values:{
@@ -90,23 +86,21 @@ class Main extends React.Component {
     }
 
     play = () => {
-        var g = this.state.genetrix.mat;
-        var prev_count = this.state.genetrix.count(1)
-        var ng = deepClone(g)
-        let res = rules(g, ng, this.rows, this.cols, prev_count, this.state.values.r, this.state.values.K)
-        this.genetrix.mat = res[0]
+        let newcount = logistic_growth_rules(this.state.genetrix, this.state.values.r, this.state.values.K)
         // console.log(this.state.r, this.state.K);
         this.setState({
             generation: this.state.generation + 1,
-            count: this.state.genetrix.count(1),
+            count: newcount,
+            genetrix: this.state.genetrix,
         });
     }
 
     clear = () => {
         clearInterval(this.intervalId);
+        this.state.genetrix.simulate_all(0, (el)=>(el.set(0)))
         this.setState({
             generation: 0,
-            genetrix: this.state.genetrix.simulate_all(0, (el)=>(el.set(0))),
+            genetrix: this.state.genetrix,
             count: 0,
         });
     }
@@ -129,7 +123,7 @@ class Main extends React.Component {
     componentDidMount() {
         // Change ratio 
         this.seeder();
-        // this.playButton();
+        this.playButton();
     }
 
     render() {

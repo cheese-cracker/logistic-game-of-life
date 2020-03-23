@@ -8,8 +8,12 @@ class Gene {
         this.state += 1
         this.state %= this.no_states
     }
+
+    toggle(){
+        this.state = !this.state
+    }
     
-    set (val){
+    set(val){
         this.state = val
     }
 

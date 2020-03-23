@@ -22,7 +22,15 @@
 .cellstate1 {
   background-color: green;
 }
+
+.cellstate2 {
+  background-color: #5555EE;
+}
+
+.cellstate3 {
+    background-color: yellow;
+}
   
 .boxer:hover {
-  background: #00CCFF;
+  background: #AA0088;
 }

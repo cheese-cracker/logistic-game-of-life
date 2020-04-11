@@ -59,14 +59,43 @@ class Grid {
         }
     }
 
+    // Get neighbour count
+    iter_neighbour_count(callback){
+        this.iter_window((win, mainel)=>{
+
+            // List of the counts of each state
+            let numlist = new Array(this.states).fill(0)
+
+            win.forEach((row) =>{
+                row.forEach((el)=>{
+                    numlist[el.state] += 1
+                })
+            })
+
+            // Correction to remove main element value
+            numlist[mainel.state] -= 1
+
+            // Callback list of hashmap counts of the states (and main element)
+            callback(numlist, mainel)
+        })
+    }
+
     count(checkstate=1){
-        let count = 0;
+        let count = 0
+        if(checkstate < this.states && checkstate > 0){
+            count = this.count_all()[checkstate]
+        }
+        return count
+    }
+
+    count_all(){
+        let countlist = new Array(this.states).fill(0);
         this.mat.forEach((row) => {
             row.forEach((el) => {
-                count += (el.state===checkstate);
+                countlist[el.state] += 1;
             })
         })
-        return count
+        return countlist
     }
 }
 export default Grid

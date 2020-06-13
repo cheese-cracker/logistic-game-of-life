@@ -5,7 +5,7 @@ import Grid from './Grid'
 import GridView from './GridView'
 import Buttons from './Buttons'
 import gitScrape from './gitscrape'
-import {logistic_growth_rules} from './rules'
+import {simulator, logistic_growth} from './rules'
 import ConfigValues from './form'
 // import cheerio from 'cheerio';
 // import request from 'request';
@@ -86,7 +86,8 @@ class Main extends React.Component {
     }
 
     play = () => {
-        let newcount = logistic_growth_rules(this.state.genetrix, this.state.values.r, this.state.values.K)
+        let var_arr = this.state.values
+        let newcount = simulator(this.state.genetrix, logistic_growth, var_arr, !var_arr.r)
         // console.log(this.state.r, this.state.K);
         this.setState({
             generation: this.state.generation + 1,

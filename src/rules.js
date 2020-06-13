@@ -1,84 +1,115 @@
-export function logistic_growth_rules(celltrix, r, K){
+
+// Rule Filter: Activate/Deactivate Cells based on Game Rules
+
+export function life_rules_filter(celltrix){
+    /* Contains the 4 Core Rules of the logistic growth game */
+
+    let selectable = []      // List of Cells that could be activated (by the boost)
+    let removable = []       // List of Cells that could be deactivated (by the boost)
+    let change_cells = []   // List of Cells which will be altered directly by Conway's Rules
+
+    celltrix.iter_neighbour_count((count_list, mainel) => {
+
+
+        let num = count_list[1]      // Number of neighbouring cells with the same state as the element
+        if(mainel.state > 1){ mainel.change() }   // Add this to visualize previous generation also
+
+        // console.log(`Neigbours: ${num}`)
+
+        // Filter cells based on the Rules of the Game
+        if(mainel.state){
+            if (num < 2 || num > 3){
+                change_cells.push(mainel)
+            }else {
+                removable.push(mainel)
+            }
+        }else if(!(mainel.state)){
+            if(num === 3){
+                change_cells.push(mainel)
+            }else if(num === 2){
+                selectable.push(mainel)
+            }
+        }
+
+
+    })
+
+    return [selectable, removable, change_cells]
+}
+
+// Simulate the Classified Cells
+
+export function simulator(celltrix, growth_function, variablearr, disable){
     let oldcount = celltrix.count()
     // console.log('grow', r, K);
 
     // Logistic Growth 
-    let growth = r * (1 - oldcount/K) * oldcount;
+    let growth = growth_function(celltrix, variablearr);
 
-    var res = rules(celltrix)
+    var res = life_rules_filter(celltrix)
+
+
     var selected = res[0]
     var removed = res[1]
+    var change_cells = res[2]
+
+    // Change the cells directly affected by Conway's Rules
+    change_cells.forEach((el) =>{
+        console.log('before', el.state)
+        el.change()
+        console.log('after', el.state)
+    })
+
+    // Simulate the rest of the cells based on the Growth Equation
 
     let newcount = celltrix.count()
     console.log(`Actual Growth: ${growth} cells`)
-    var boost;
-    if(r){
-        boost = oldcount + growth - newcount;
-    }else{
-        // Normal Logistic Growth
-        boost = 0; 
-    }
+    var boost = oldcount + growth - newcount
+    // Check disable
+    if(disable){ boost = 0}
+
     // Testing Values
     // console.log(oldcount, growth, newcount);
-    // console.log(boost)
+    console.log(boost)
 
     // Change Ratio = The ratio of cells to be added/deleted; Threshold = 1 - change_ratio
-    let change_ratio;
+    let change_ratio
     if (boost > 0){
-        change_ratio = boost/selected.length;
+        change_ratio = boost/selected.length
         selected.forEach((gene) => {
             gene.simulate(1 - change_ratio, (cell)=>{cell.change()})
-        });
+        })
     }else if (boost < 0){
-        change_ratio = - boost/removed.length;
+        change_ratio = - boost/removed.length
         removed.forEach((gene) => {
             gene.simulate(1 - change_ratio, (cell)=>{cell.change()})
-        });
+        })
     }
+
     newcount = celltrix.count(1)
+
     console.log(`Current Growth: ${newcount - oldcount} cells`)
+
     return newcount
 };
 
+/* Growth Equations
+ * These can be plugged into boosted growth rules*/
 
-export function rules(celltrix){
-    let selectable = [];
-    let removable = [];
-    let change_select = []
-    celltrix.iter_window((win, mainel) =>{
-        // Count No. of alive Neighbours
-        let adj = 0
-        win.forEach((row) =>{
-            row.forEach((el)=>{
-                if(el.state === 2){
-                    el.change()
-                }
-                    adj += el.state
-            })
-        })
-        adj -= mainel.state    // Correction to remove main element value
+export function logistic_growth(celltrix, vars){
+    let rate  = vars['r']
+    let capacity = vars['K']
+    let population = celltrix.count(1)  // Same as oldcount
+    let growth = rate * ( 1 - population/capacity) * population
+    return growth
+}
 
-        // console.log(adj)
-
-        // check rules for life and create/destroy
-        if(mainel.state){
-            if (adj < 2 || adj > 3){
-                change_select.push(mainel)
-            }else{
-                removable.push(mainel)
-            }
-        }else if(!(mainel.state)){
-            if(adj === 3){
-                change_select.push(mainel)
-            }else if(adj === 2){
-                selectable.push(mainel)
-            }
-        }
-        // console.log(mainel)
-    })
-    // console.log(change_select)
-    change_select.forEach((el) =>{
-        el.change()
-    })
-    return [selectable, removable]
+export function zombie_logistic_growth(celltrix, vars){
+    let rate  = vars['r']
+    let capacity = vars['K']
+    let population = celltrix.count(1)  // Same as oldcount
+    let zombie_pop = celltrix.count(2) // Cells which die in the previous generation
+    let zombie_strength = vars['z']
+    let growth = rate * ( 1 - population/capacity) * capacity - zombie_strength*zombie_pop
+    return growth
 }

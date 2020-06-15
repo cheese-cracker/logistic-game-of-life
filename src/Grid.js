@@ -4,6 +4,8 @@ class Grid {
     constructor (row, col, states=2, default_val=0) {
         this.rows = row
         this.cols = col
+        // Size has to be atleast 3x3
+        if(this.rows < 3 || this.cols < 3){this.rows = 10; this.cols = 10}
         var mat = []
         for(let i = 0; i < row; i++){
             let row = []
@@ -31,51 +33,48 @@ class Grid {
         })
     }
 
-    // Get neighbour window (Identity convolution also?)
+    // Get neighbour window (3x3 Identity Convolution)
     iter_window(callback){
-        for(let i = 0; i < this.rows; i++){
-            let rowset;
-            if(i === 0){
-                rowset = this.mat.slice(i, i + 2)
-            } else if (i === this.rows-1){
-                rowset = this.mat.slice(i - 1, i + 1)
-            }else{
-                rowset = this.mat.slice(i - 1, i + 2)
+        let rowset = []
+        for(let k = 0; k <= 1; k++){ rowset.push(this.mat[k]) }
+
+        for(let i = 1; i <= this.rows; i++){
+            rowset.push(this.mat[(i + 1) % this.rows]);
+
+            let window = rowset.map((row) => row.slice(0, 2))
+
+            for(let j = 1; j <= this.cols; j++){
+                // Add the 3 elements of the new col
+                for(let k = 0; k < 3; k++){ window[k].push(rowset[k][(j + 1) % this.cols]) }
+
+                callback(window)           // Callback = 3 x 3 window
+
+                // Remove the 3 elements of the old col
+                for(let k = 0; k < 3; k++){ window[k].shift() }
             }
-            for(let j = 0; j < this.cols; j++){
-                let window;
-                if(j === 0){
-                    window = rowset.map((row) => row.slice(j, j + 2))
-                } else if (j === this.cols-1){
-                    window = rowset.map((row) => row.slice(j - 1, j + 1))
-                }else{
-                    window = rowset.map((row) => row.slice(j - 1, j + 2))
-                }
-                // callback window
-                callback(window, this.mat[i][j])
-                // callback window, row, col
-                // callback window, element
-            }
+            rowset.shift()
         }
     }
 
     // Get neighbour count
     iter_neighbour_count(callback){
-        this.iter_window((win, mainel)=>{
-
+        this.iter_window((win)=>{
             // List of the counts of each state
             let numlist = new Array(this.states).fill(0)
-
-            win.forEach((row) =>{
-                row.forEach((el)=>{
+            console.log(win)
+                // throw new Error("Something went badly wrong!");
+            win.forEach((row, i) =>{
+                console.log(row)
+                row.forEach((el, k)=>{
                     numlist[el.state] += 1
                 })
             })
 
+            let mainel = win[1][1]
             // Correction to remove main element value
             numlist[mainel.state] -= 1
 
-            // Callback list of hashmap counts of the states (and main element)
+            // Callback frequency array of counts of the states
             callback(numlist, mainel)
         })
     }

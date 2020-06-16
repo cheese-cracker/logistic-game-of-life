@@ -1,4 +1,3 @@
-
 // Rule Filter: Activate/Deactivate Cells based on Game Rules
 
 export function life_rules_filter(celltrix){
@@ -12,6 +11,7 @@ export function life_rules_filter(celltrix){
 
 
         let num = count_list[1]      // Number of neighbouring cells with the same state as the element
+
         if(mainel.state > 1){ mainel.change() }   // Add this to visualize previous generation also
 
         // console.log(`Neigbours: ${num}`)
@@ -39,30 +39,22 @@ export function life_rules_filter(celltrix){
 
 // Simulate the Classified Cells
 
-export function simulator(celltrix, growth_function, variablearr, disable){
+export function simulator(celltrix, growth_function, variablearr){
     let oldcount = celltrix.count()
     // console.log('grow', r, K);
 
-    // Logistic Growth 
+    // Logistic Growth
     let growth = growth_function(celltrix, variablearr);
+    let disable = !variablearr.r;
 
-    var res = life_rules_filter(celltrix)
-
-
-    var selected = res[0]
-    var removed = res[1]
-    var change_cells = res[2]
+    let [selected, removed, change_cells] = life_rules_filter(celltrix)
 
     // Change the cells directly affected by Conway's Rules
-    change_cells.forEach((el) =>{
-        console.log('before', el.state)
-        el.change()
-        console.log('after', el.state)
-    })
+    change_cells.forEach((el) =>{ el.change() })
 
     // Simulate the rest of the cells based on the Growth Equation
 
-    let newcount = celltrix.count()
+    let newcount = celltrix.count(1)
     console.log(`Actual Growth: ${growth} cells`)
     var boost = oldcount + growth - newcount
     // Check disable
@@ -70,7 +62,7 @@ export function simulator(celltrix, growth_function, variablearr, disable){
 
     // Testing Values
     // console.log(oldcount, growth, newcount);
-    console.log(boost)
+    // console.log(boost)
 
     // Change Ratio = The ratio of cells to be added/deleted; Threshold = 1 - change_ratio
     let change_ratio

@@ -12,7 +12,7 @@ import ConfigValues from './form'
 
 
 class Main extends React.Component {
-    time_iter = 4000;
+    time_iter = 3000;
     seed_ratio = 0.125;
     rows = 7+5+5;
     cols = 36+16+5+5;
@@ -87,7 +87,7 @@ class Main extends React.Component {
 
     play = () => {
         let var_arr = this.state.values
-        let newcount = simulator(this.state.genetrix, logistic_growth, var_arr, !var_arr.r)
+        let newcount = simulator(this.state.genetrix, logistic_growth, var_arr)
         // console.log(this.state.r, this.state.K);
         this.setState({
             generation: this.state.generation + 1,

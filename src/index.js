@@ -4,11 +4,9 @@ import './css/index.css';
 import Grid from './Grid'
 import GridView from './GridView'
 import Buttons from './Buttons'
-import gitScrape from './gitscrape'
+// import gitScrape from './gitscrape'
 import {simulator, logistic_growth} from './rules'
 import ConfigValues from './form'
-// import cheerio from 'cheerio';
-// import request from 'request';
 
 
 class Main extends React.Component {
@@ -41,12 +39,12 @@ class Main extends React.Component {
         });
     }
 
+    /*
     gitSeeder = () => {
         let mat = this.state.genetrix
         // array from scraper
-        // var activeArr = [[1,2], [2,3], [2,2], [2,1]];
-        // const url = 'https://github.com/cheese-cracker/';
-        const url = `https://cors-anywhere.herokuapp.com/github.com/${ this.state.nick }`
+        // var activeArr = [[1,2], [2,3], [2,2], [2,1]]
+        const url = `https://github.com/${ this.state.nick }`
         gitScrape(url, (activeArr) => {
             console.log(activeArr)
             const XOffset = 4
@@ -66,6 +64,7 @@ class Main extends React.Component {
             });
         });
     }
+    */
 
     seeder = () => {
         let thresh =  1 - this.seed_ratio

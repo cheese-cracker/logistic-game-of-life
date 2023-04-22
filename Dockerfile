@@ -2,12 +2,11 @@
 FROM node:alpine
 
 # No need to set WORKDIR
+# WORKDIR /app
 
 # Copy all the files to the Docker VM
 COPY . .
 
-RUN npm install
+RUN yarn install
 
-RUN npm run build
-
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]

@@ -1,12 +1,26 @@
 # Choose docker image
 FROM node:alpine
 
-# No need to set WORKDIR
-# WORKDIR /app
+# Set workspace (so container VM is neat and organized)
+WORKDIR /app
 
-# Copy all the files to the Docker VM
+# Copy all files to Docker VM
 COPY . .
 
+# Install packages
 RUN yarn install
 
-CMD [ "yarn", "start" ]
+# serve to serve build
+RUN yarn global add serve
+
+# Run Build
+RUN yarn run build
+
+# Mount local volume
+VOLUME /app/node_modules
+
+# Expose port
+EXPOSE 3000
+
+# Run the application (curly quotes only)
+CMD [ "serve", "-s", "build/" ]
